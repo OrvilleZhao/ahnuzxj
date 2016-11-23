@@ -83,8 +83,8 @@ class Naive
              end
           end
           for k in 0..@Max[i]
-            pCount[i]=((pCount[i].to_f+1.0)/(@positiveE+@Max[i])).round(8)
-            nCount[i]=((nCount[i].to_f+1.0)/(@negativeE+@Max[i])).round(8)
+            pCount[k]=((pCount[k].to_f+1.0)/(@positiveE+@Max[i])).round(8)
+            nCount[k]=((nCount[k].to_f+1.0)/(@negativeE+@Max[i])).round(8)
           end
           @x[i][0]=pCount
           @x[i][1]=nCount
