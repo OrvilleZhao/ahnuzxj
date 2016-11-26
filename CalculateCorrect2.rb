@@ -80,15 +80,17 @@ class Naive
              end
           end
           for k in 0..@Max[i]
-            pCount[i]=((pCount[i].to_f+1.0)/(@positiveE+@Max[i])).round(8)
-            nCount[i]=((nCount[i].to_f+1.0)/(@negativeE+@Max[i])).round(8)
+            pCount[k]=((pCount[k].to_f+1.0)/(@positiveE+@Max[i])).round(8)
+            nCount[k]=((nCount[k].to_f+1.0)/(@negativeE+@Max[i])).round(8)
           end
           @x[i][0]=pCount
           @x[i][1]=nCount
       end
   end
   def search
-    count=0
+    preCorrectCount=0.0#正确预测的正样本数
+    prePositiveCount=0.0#预测为正例的样本数
+    positiveCount=0.0#标注的正样本数
     for i in 0..@recogMat.length-1
       pProbability=1.0
       nProbability=1.0
@@ -99,11 +101,22 @@ class Naive
       end
       pAnswer=@pYp*pProbability
       nAnswer=@pYg*nProbability
-      if (pAnswer>nAnswer&&@textLabels[i]==1)||(pAnswer<nAnswer&&@textLabels[i]==-1)
-          count+=1
+      if pAnswer>nAnswer&&@textLabels[i]==1
+        preCorrectCount+=1.0
+      end
+      if @textLabels[i]==1
+        positiveCount+=1.0
+      end
+      if pAnswer>nAnswer
+        prePositiveCount+=1.0
       end
     end
-    puts "正确率为:"+((count.to_f/@recogMat.length.to_f)*100).to_s+"%"
+    #puts "正确率为:"+((count.to_f/@recogMat.length.to_f)*100).to_s+"%"
+    precision=(preCorrectCount/prePositiveCount).to_f
+    recall=(preCorrectCount/positiveCount).to_f
+    puts "Precision:"+precision.to_s
+    puts "Recall:"+recall.to_s
+    puts "F1:"+(2.0*(precision*recall)/(precision+recall)).to_s
   end
 end
 class Test
