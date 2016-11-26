@@ -185,20 +185,30 @@ class Recog
     return arr.length-1
   end
   def recognition
-    count=0.to_f
+    preCorrectCount=0.0#正确预测的正样本数
+    prePositiveCount=0.0#预测为正例的样本数
+    positiveCount=0.0#标注的正样本数
     for i in 0..@recogMat.length-1
-      d=@dataMatrix
       k=@alpha.vectormultiply(@classLabels).T.multiply(@dataMatIn.multiply(@recogMat.select(i,':').T)).to_f+@b
-      if (k>0&&@textLabels[i]==1)||(k<0&&@textLabels[i]==-1)
-        count+=1.0;
+      if (k>0&&@textLabels[i]==1)
+        preCorrectCount+=1.0
+      end
+      if @textLabels[i]==1
+        positiveCount+=1.0
+      end
+      if k>0
+        prePositiveCount+=1.0
       end
     end
-    puts "成功率为:"+(count*100.0/@recogMat.length.to_f).to_s+"%"
+    precision=(preCorrectCount/prePositiveCount).to_f
+    recall=(preCorrectCount/positiveCount).to_f
+    puts "Precision:"+precision.to_s
+    puts "Recall:"+recall.to_s
+    puts "F1:"+(2.0*(precision*recall)/(precision+recall)).to_s
   end
 end
 class Test
   a=Recog.new
   a.fileload
-  puts "文件处理完毕"
   a.recognition
 end
